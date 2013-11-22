@@ -1,0 +1,68 @@
+<p id="notice"><%= notice %></p>
+
+<h1><%= @song.artist %> - <%= @song.songname %></h1>
+
+<p>
+  <strong>Bpm:</strong>
+  <%= number_with_precision(@song.bpm, precision: 1) %>
+  &emsp; <strong>Key:</strong>
+  <%= @song.key %><%= if @song.key then ": " + SongsController.keynames[@song.key] end %>
+  &emsp;<strong>SpotifyID:</strong>
+  <%= @song.spotify_id %>
+</p>
+
+<p>
+	<br><br>
+	<strong>Compatible songs in your library:</strong>
+</p>
+
+<table>
+  <thead>
+    <tr>
+      <th><%= sortable "artist" %></th>
+      <th><%= sortable "songname", "Title" %></th>
+      <th><%= sortable "bpm", "BPM" %></th>
+      <th><%= sortable "key" %></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+	<% rowcounter=0 %>
+  <tbody>
+  	  <% if @related_songs %>
+	    <% @related_songs.each do |song| %>
+	    	    <% if rowcounter.even? %>
+		    	<% bgcolor = "dedede" %>
+		    <% else %>
+		    <% bgcolor = "white" %>
+		    <% end %>
+	      <tr bgcolor="<%= bgcolor %>">
+	        <td><%= song.artist %></td>
+	        <td><%= song.songname %></td>
+	        <td align="right"><%= number_with_precision(song.bpm, precision: 1) %></td>
+	        <td align="center"><%= SongsController.keynames[song.key] %> : <%= song.key %> </td>
+	        <td><%= link_to 'SELECT SONG', song %></td>
+	        <td><%= link_to 'Edit', edit_song_path(song) %></td>
+	        <td><%= link_to 'Delete', song, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+	        <% rowcounter+=1 %>
+	      </tr>
+	    <% end %>
+	  <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<style>
+
+    table {border-collapse:collapse;}    
+    th { padding-left : 13px;
+         padding-right : 13px; }
+    td { padding-left : 13px;
+         padding-right : 13px; }
+
+</style>
+
+<%= link_to 'Edit', edit_song_path(@song) %> |
+<%= link_to 'Back', songs_path %>

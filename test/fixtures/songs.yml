@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  artist: MyString
+  songname: MyString
+  bpm: 9.99
+  key: 1
+  spotify_id: MyString
+
+two:
+  artist: MyString
+  songname: MyString
+  bpm: 9.99
+  key: 1
+  spotify_id: MyString

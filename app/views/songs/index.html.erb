@@ -1,0 +1,98 @@
+<h1><%= link_to 'Spotify SongSelector', songs_path %></h1>
+
+<%= form_tag songs_path, :method => 'get', :id => "songs_search" do %>
+    Artist <%= text_field_tag :searchartist, params[:searchartist] %>
+    Title <%= text_field_tag :searchtitle, params[:searchtitle] %>
+    <%= submit_tag "Search", :searchartist => nil, :searchtitle => nil %>
+<% end %>
+<p id="notice"><%= notice %></p>
+
+<br><br>
+
+<table>
+  <thead>
+    <tr>
+      <th><%= sortable "artist" %></th>
+      <th><%= sortable "songname", "Title" %></th>
+      <th><%= sortable "bpm", "BPM" %></th>
+      <th><%= sortable "key" %></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+	<% rowcounter=0 %>
+  <tbody>
+    <% @songs.each do |song| %>
+	    <% if rowcounter.even? %>
+	    	<% bgcolor = "dedede" %>
+	    <% else %>
+	    <% bgcolor = "white" %>
+	    <% end %>
+      <tr bgcolor="<%= bgcolor %>">
+        <td><%= song.artist %></td>
+        <td><%= song.songname %></td>
+        <td align="right"><%= number_with_precision(song.bpm, precision: 1) %></td>
+        <td align="center"><% if song.key %>
+        	  <% keyname=SongsController.keynames[song.key].html_safe %>
+        	  <% # (1..(2-keyname.length)).each do keyname << "&nbsp;".html_safe end %>
+        	  <% keyname << " : ".html_safe %>
+        	  <% #(1..(2-song.key.to_s.length)).each do keyname << "&nbsp;".html_safe end %>
+        	<% end %><%= keyname + song.key.to_s %></td>
+        <td><%= link_to 'SELECT SONG', song %></td>
+        <td><%= link_to 'Edit', edit_song_path(song) %></td>
+        <td><%= link_to 'Delete', song, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <% rowcounter+=1 %>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+
+<br><br>
+<p <%= if ( !params[:searchartist].blank? || !params[:searchtitle].blank? ) then "class=\"hidden\"".html_safe end %>><strong>Unmatched songs:</strong></p>
+<table <%= if ( !params[:searchartist].blank? || !params[:searchtitle].blank? ) then "class=\"hidden\"".html_safe end %>>
+  <thead>
+    <tr>
+      <th>Artist</th>
+      <th>Title</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+	<% rowcounter=0 %>
+  <tbody>
+    <% @unfound_songs.each do |song| %>
+	    <% if rowcounter.even? %>
+	    	<% bgcolor = "dedede" %>
+	    <% else %>
+	    <% bgcolor = "white" %>
+	    <% end %>
+      <tr bgcolor="<%= bgcolor %>">
+        <td><%= song.artist %></td>
+        <td><%= song.songname %></td>
+        <td><%= link_to 'Edit', edit_song_path(song) %></td>
+        <td><%= link_to 'Delete', song, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <% rowcounter+=1 %>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<style>
+    
+    table {border-collapse:collapse;}
+    th { padding-left : 13px;
+         padding-right : 13px;  }
+    td { padding-left : 13px;
+         padding-right : 13px; }
+    .hidden { display : none; }
+
+</style>
+
+<%= link_to 'Import Songs', import_path %><br>
+<%= link_to 'Clear all songs', delete_all_path, data: { confirm: 'Are you sure?  This will delete ALL data in the table' }  %>
+
